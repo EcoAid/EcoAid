@@ -37,7 +37,7 @@ public class Usuario {
 	
 	@NotBlank(message = "O atributo de email é Obrigatório!")
 	@Size(min = 8, max = 100, message = "O atributo email deve conter no minimo 8 e no máximo 100 caracteres")
-	private String email;
+	private String usuario;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("usuario")
@@ -75,12 +75,12 @@ public class Usuario {
 		this.foto = foto;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getUsuario() {
+		return usuario;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 
 	public List<Produto> getProduto() {
