@@ -38,7 +38,7 @@ public class Usuario {
 	
 	@Schema(example = "email@email.com.br")
 	@NotBlank(message = "O atributo de email é Obrigatório!")
-	@Size(min = 8, max = 100, message = "O atributo email deve conter no minimo 8 e no máximo 100 caracteres")
+	@Size(min = 8, max = 100, message = "O atributo email deve conter no minimo 8 e no máximo 150 caracteres")
 	private String usuario;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
@@ -93,6 +93,17 @@ public class Usuario {
 
 	public void setProduto(List<Produto> produto) {
 		this.produto = produto;
+	}
+
+	public Usuario(Long id, String nome, String senha, String foto, String usuario) {
+		this.id = id;
+		this.nome = nome;
+		this.senha = senha;
+		this.foto = foto;
+		this.usuario = usuario;
+	}
+
+	public Usuario() {
 	}
 	
 }
