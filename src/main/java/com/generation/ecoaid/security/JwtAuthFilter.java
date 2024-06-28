@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
+//Indica que esta classe é um componente gerenciado pelo Spring
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 	//Injeção das dependencias do userDetailsService.
@@ -41,25 +42,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String username = null;
 
         try{
+            // Verifica se o header contém um token JWT válido
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 token = authHeader.substring(7);
                 username = jwtService.extractUsername(token);
             }
-
+            // Verifica se o nome de usuário foi extraído e se o contexto de segurança não está autenticado
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
+                // Valida o token JWT
                 if (jwtService.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    // Define o contexto de segurança do Spring com o token de autenticação
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
 
             }
+            // Continua a cadeia de filtros
             filterChain.doFilter(request, response);
 
         }catch(ExpiredJwtException | UnsupportedJwtException | MalformedJwtException 
                 | SignatureException | ResponseStatusException e){
+            // Define o status da resposta HTTP como FORBIDDEN em caso de exceções relacionadas ao JWT
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return;
         }

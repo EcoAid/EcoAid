@@ -15,7 +15,8 @@ import com.generation.ecoaid.repository.UsuarioRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
+    
+	// Injeção de dependência do repositório de usuário
 	@Autowired
 	private UsuarioRepository usuarioRepository;
 

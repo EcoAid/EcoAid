@@ -13,9 +13,15 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 
 @Configuration
+//Indica que esta classe contém definições de beans que serão gerenciados pelo Spring
 public class SwaggerConfig {
 	
 	@Bean
+	/**
+     * Define um bean que configura a documentação da API usando o Swagger.
+     * 
+     * @return uma instância configurada de OpenAPI com informações da API.
+     */
 	OpenAPI springBlogPessoalOpenAPI() {
 		return new OpenAPI()
 				.info(new Info()
@@ -35,13 +41,20 @@ public class SwaggerConfig {
 	}
 	
 	@Bean
+	   /**
+     * Define um bean que personaliza a documentação da API, adicionando respostas padrão
+     * para diferentes códigos de status HTTP.
+     * 
+     * @return uma instância de OpenApiCustomizer.
+     */
     OpenApiCustomizer customerGlocalHeaderOpenApiCustomiser () {
         return openApi -> {
+            // Itera sobre todos os caminhos (endpoints) e suas operações (métodos HTTP) na API
             openApi.getPaths().values().forEach(pathItem -> pathItem.readOperations()
                     .forEach(operation -> {
 
                         ApiResponses apiResponses = operation.getResponses();
-
+                        // Adiciona respostas padrão para diferentes códigos de status HTTP
                         apiResponses.addApiResponse("200", createApiResponse("Sucesso!"));
                         apiResponses.addApiResponse("201", createApiResponse("Objeto Persistido"));
                         apiResponses.addApiResponse("204", createApiResponse("Objeto Excluído"));
@@ -55,7 +68,11 @@ public class SwaggerConfig {
                     }));
         };
 }
-	
+	 /**
+     * Método auxiliar que cria uma instância de ApiResponse com uma descrição fornecida.
+     * 
+     * @return uma instância de ApiResponse com a descrição definida.
+     */
 	  private ApiResponse createApiResponse(String message) {
 	        return new ApiResponse().description(message);
 	    }

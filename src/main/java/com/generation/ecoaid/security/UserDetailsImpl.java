@@ -35,12 +35,12 @@ public class UserDetailsImpl implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
 	}
-
+    // Retorna a senha do usuário
 	@Override
 	public String getPassword() {
 		return password;
 	}
-
+    // Retorna o nome de usuário (email)
 	@Override
 	public String getUsername() {
 		return userName;
@@ -51,17 +51,17 @@ public class UserDetailsImpl implements UserDetails {
 	public boolean isAccountNonExpired() {
 		return true;
 	}
-
+    // Indica se a conta do usuário não está bloqueada
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
-
+    // Indica se as credenciais do usuário (senha) não estão expiradas
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
-
+    // Indica se a conta do usuário está habilitada
 	@Override
 	public boolean isEnabled() {
 		return true;

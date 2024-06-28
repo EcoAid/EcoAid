@@ -20,22 +20,38 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+//Ativa a configuração de segurança web no Spring
 public class BasicSecurityConfig {
 
     @Autowired
-    private JwtAuthFilter authFilter;
+    private JwtAuthFilter authFilter; // Injeta o filtro de autenticação JWT
 
     @Bean
+    /**
+     * Define um bean que retorna uma implementação de UserDetailsService.
+     * 
+     * @return uma instância de UserDetailsServiceImpl.
+     */
     UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }
 
     @Bean
+    /**
+     * Define um bean que retorna um codificador de senhas BCrypt.
+     * 
+     * @return uma instância de BCryptPasswordEncoder.
+     */
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
+    /**
+     * Define um bean que retorna um provedor de autenticação.
+     * 
+     * @return uma instância de DaoAuthenticationProvider configurada.
+     */
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
@@ -44,6 +60,13 @@ public class BasicSecurityConfig {
     }
 
     @Bean
+    /**
+     * Define um bean que retorna um gerenciador de autenticação.
+     * 
+     * @param authenticationConfiguration a configuração de autenticação do Spring.
+     * @return uma instância de AuthenticationManager.
+     * @throws Exception em caso de erro ao obter o gerenciador de autenticação.
+     */
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -60,18 +83,18 @@ public class BasicSecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                    .requestMatchers("/usuarios/logar").permitAll()
-                    .requestMatchers("/usuarios/cadastrar").permitAll()
+                    .requestMatchers("/usuarios/logar").permitAll() // Permite acesso sem autenticação ao endpoint de login
+                    .requestMatchers("/usuarios/cadastrar").permitAll() // Permite acesso sem autenticação ao endpoint de cadastro
                     //Permitir os gets do endpoint de produtos
                     .requestMatchers(HttpMethod.GET, "/produto").permitAll()
                   //Permitir todos os gets do endpoint de produtos
-                    .requestMatchers(HttpMethod.GET, "/produto/**").permitAll()
-                    .requestMatchers("/error/**").permitAll()
-                    .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                    .anyRequest().authenticated())
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-            .httpBasic(withDefaults());
+                    .requestMatchers(HttpMethod.GET, "/produto/**").permitAll() // Permite acesso sem autenticação a todos os GETs do endpoint de produto
+                    .requestMatchers("/error/**").permitAll() // Permite acesso sem autenticação ao endpoint de erro
+                    .requestMatchers(HttpMethod.OPTIONS).permitAll() // Permite acesso sem autenticação aos métodos OPTIONS
+                    .anyRequest().authenticated()) // Requer autenticação para qualquer outra requisição
+            .authenticationProvider(authenticationProvider()) // Define o provedor de autenticação
+            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class) // Adiciona o filtro de autenticação JWT antes do filtro padrão de autenticação por nome de usuário e senha
+            .httpBasic(withDefaults()); // Habilita autenticação HTTP básica com configurações padrão
 
         return http.build();
 
